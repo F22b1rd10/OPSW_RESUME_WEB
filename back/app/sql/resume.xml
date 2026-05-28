@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper namespace="resume">
+    <!-- 메인 화면용 간단 리스트 조회 -->
+    <select id="get_member_summary_list">
+        SELECT id, name, profile_image_url, short_introduction 
+        FROM members 
+        ORDER BY created_at DESC;
+    </select>
+
+    <!-- 카드 클릭 시 상세 이력서 조회 -->
+    <select id="get_resume_detail_by_member_id">
+        SELECT m.name, m.profile_image_url, m.short_introduction, r.tech_stacks, r.education, r.experience
+        FROM members m
+        JOIN resumes r ON m.id = r.member_id
+        WHERE m.id = $1;
+    </select>
+
+    <!-- 이력서 생성 -->
+    <insert id="insert_member">
+        INSERT INTO members (name, profile_image_url, short_introduction)
+        VALUES ($1, $2, $3)
+        RETURNING id;
+    </insert>
+
+    <insert id="insert_resume">
+        INSERT INTO resumes (member_id, tech_stacks, education, experience)
+        VALUES ($1, $2, $3, $4);
+    </insert>
+</mapper>
